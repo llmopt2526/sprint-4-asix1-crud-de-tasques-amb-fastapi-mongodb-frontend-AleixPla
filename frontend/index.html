@@ -1,9 +1,63 @@
-<!doctype html>
-<html>
-  <head>
-    <title>This is the title of the webpage!</title>
-  </head>
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de pel·lícules</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
   <body>
-    <p>This is an example paragraph. Anything in the <strong>body</strong> tag will appear on the page, just like this <strong>p</strong> tag and its contents.</p>
+
+    <div class="container">
+      <h2>Afegir pel·lícula</h2>
+      <form id="formulari-pelicules">
+
+        <div class="form-group">
+          <label for="titol">Títol:</label>
+          <input type="text" id="titol" required>
+        </div>
+
+        <div class="form-group">
+          <label for="descripcio">Descripció:</label>
+          <textarea id="descripcio" rows="3" required></textarea>
+        </div>
+
+        <label for="estat">Estat:</label>
+        <select id="estat" name="estat" required>
+          <option value="pendent de veure">Pendent de veure</option>
+          <option value="vista">Vista</option>
+        </select>
+
+        <div class="form-group">
+          <label for="puntuacio">Puntuació (1-5):</label>
+          <input type="number" id="puntuacio" min="1" max="5" required>
+        </div>
+
+        <div class="form-group">
+          <label for="genere">Gènere:</label>
+          <input type="text" id="genere" required>
+        </div>
+
+        <div class="form-group">
+          <label for="usuari">Usuari:</label>
+          <input type="text" id="usuari" required>
+        </div>
+
+        <button type="submit">Guardar la pel·lícula</button>
+      </form>
+    </div>
+
+    <div class="llista-container">
+      <h2>Llista de pel·lícules</h2>
+      <div id="llista-pelicules">
+      </div>
+    </div>
+
+    <script src="javascript.js"></script>
   </body>
+
 </html>
