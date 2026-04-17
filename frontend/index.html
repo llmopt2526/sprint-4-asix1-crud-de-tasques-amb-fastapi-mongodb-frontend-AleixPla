@@ -4,60 +4,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestor de pel·lícules</title>
+  <title>Gestor de Pel·lícules</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+  <div class="container">
+    <h2 id="titol-formulari">Afegir pel·lícula</h2>
+    <form id="formulari-pelicules">
+      <input type="hidden" id="pelicula-id">
 
-  <body>
+      <div class="form-group">
+        <label>Títol</label>
+        <input type="text" id="titol" required>
+      </div>
 
-    <div class="container">
-      <h2>Afegir pel·lícula</h2>
-      <form id="formulari-pelicules">
+      <div class="form-group">
+        <label>Descripció</label>
+        <textarea id="descripcio" rows="3" required></textarea>
+      </div>
 
-        <div class="form-group">
-          <label for="titol">Títol:</label>
-          <input type="text" id="titol" required>
-        </div>
-
-        <div class="form-group">
-          <label for="descripcio">Descripció:</label>
-          <textarea id="descripcio" rows="3" required></textarea>
-        </div>
-
-        <label for="estat">Estat:</label>
-        <select id="estat" name="estat" required>
+      <div class="form-group">
+        <label>Estat</label>
+        <select id="estat">
           <option value="pendent de veure">Pendent de veure</option>
           <option value="vista">Vista</option>
         </select>
-
-        <div class="form-group">
-          <label for="puntuacio">Puntuació (1-5):</label>
-          <input type="number" id="puntuacio" min="1" max="5" required>
-        </div>
-
-        <div class="form-group">
-          <label for="genere">Gènere:</label>
-          <input type="text" id="genere" required>
-        </div>
-
-        <div class="form-group">
-          <label for="usuari">Usuari:</label>
-          <input type="text" id="usuari" required>
-        </div>
-
-        <button type="submit">Guardar la pel·lícula</button>
-      </form>
-    </div>
-
-    <div class="llista-container">
-      <h2>Llista de pel·lícules</h2>
-      <div id="llista-pelicules">
       </div>
-    </div>
 
-    <script src="javascript.js"></script>
-  </body>
+      <div class="form-group">
+        <label>Puntuació (1-5)</label>
+        <input type="number" id="puntuacio" min="1" max="5" required>
+      </div>
+
+      <div class="form-group">
+        <label>Gènere</label>
+        <input type="text" id="genere" required>
+      </div>
+
+      <div class="form-group">
+        <label>Usuari</label>
+        <input type="text" id="usuari" required>
+      </div>
+
+      <button type="submit" id="btn-guardar">Guardar la pel·lícula</button>
+      <button type="button" id="btn-cancelar"
+        style="display: none; width: 100%; margin-top: 10px; background: #6c757d; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer;"
+        onclick="cancelarEdicio()">Cancel·lar</button>
+    </form>
+  </div>
+
+  <div class="llista-container">
+    <h2>Llista de pel·lícules</h2>
+    <div id="llista-pelicules"></div>
+  </div>
+
+  <script src="javascript.js"></script>
+</body>
 
 </html>
