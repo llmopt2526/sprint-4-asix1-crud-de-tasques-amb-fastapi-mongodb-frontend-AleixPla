@@ -1,152 +1,173 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-}
+/* Importem la font típica de Skeleton */
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,300,600');
 
-.container {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-  width: 380px;
-  height: fit-content;
-  position: sticky;
-  top: 20px;
+body {
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  line-height: 1.6;
 }
 
 h2 {
   margin-top: 0;
-  color: #1a1a1a;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 10px;
-  font-size: 1.5rem;
+  font-size: 2.4rem;
+  font-weight: 300;
+  letter-spacing: -.1rem;
+  margin-bottom: 2rem;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 600;
-  font-size: 13px;
-  color: #555;
-}
-
-input,
-textarea,
-select {
+/* Contenidors de l'estructura general */
+.container {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  box-sizing: border-box;
-  font-size: 14px;
-  resize: none;
-  /* AQUESTA ÉS LA LÍNIA AFEGIDA PER BLOQUEJAR LA MIDA */
+  max-width: 350px;
+  height: fit-content;
+  position: sticky;
+  top: 40px;
 }
 
-input:focus,
-textarea:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
-}
-
-/* Botó principal del formulari */
-#btn-guardar {
-  width: 100%;
-  padding: 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: background 0.3s;
-}
-
-#btn-guardar:hover {
-  background-color: #218838;
-}
-
-/* Llista de targetes */
 .llista-container {
   flex: 1;
   max-width: 600px;
 }
 
-.pelicula-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border-left: 5px solid #007bff;
-  /* Detall visual */
-  transition: transform 0.2s;
+/* Formularis i Inputs - Estil Skeleton */
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
-.pelicula-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+label {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px;
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 80px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  resize: none;
+  /* Manté la casella fixa com vas demanar */
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0;
+}
+
+/* Botons Generals - Estil Skeleton (Lletres majúscules i minimalistes) */
+button {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+button:hover {
+  color: #333;
+  border-color: #888;
+  outline: 0;
+}
+
+/* Botó Principal (Guardar) - Blau Skeleton */
+#btn-guardar {
+  width: 100%;
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0;
+  margin-top: 1rem;
+}
+
+#btn-guardar:hover {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB;
+}
+
+/* Targetes de Pel·lícules (Sense ombres fortes, vores fines) */
+.pelicula-card {
+  background: #fff;
+  border: 1px solid #E1E1E1;
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 .pelicula-card h3 {
-  margin: 0 0 10px 0;
-  color: #007bff;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #33C3F0;
 }
 
 .pelicula-card p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #444;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }
 
-/* --- BOTONS D'ACCIÓ DINS LA TARGETA --- */
+.pelicula-card strong {
+  font-weight: 600;
+}
+
+/* Botons de la Targeta */
 .accions-targeta {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-}
-
-.btn-editar,
-.btn-esborrar {
-  width: auto;
-  /* Important: que no ocupin el 100% */
-  padding: 8px 14px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: filter 0.2s;
+  gap: 10px;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #E1E1E1;
 }
 
 .btn-editar {
-  background-color: #ffc107;
-  color: #000;
+  /* Agafa l'estil bàsic de botó transparent de Skeleton */
 }
 
+/* Botó Esborrar - Toc de vermell minimalista */
 .btn-esborrar {
-  background-color: #dc3545;
-  color: white;
+  color: #E74C3C;
+  border-color: #E74C3C;
 }
 
-.btn-editar:hover,
 .btn-esborrar:hover {
-  filter: brightness(0.9);
+  color: #FFF;
+  background-color: #E74C3C;
+  border-color: #E74C3C;
 }
