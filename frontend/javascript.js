@@ -69,7 +69,7 @@ formulari.addEventListener('submit', async function (e) {
 });
 
 async function esborrarPelicula(id) {
-    if (confirm("Segur?")) {
+    if (confirm("Estas segur?")) {
         await fetch(API_URL + id, { method: "DELETE" });
         carregarPelicules();
     }
