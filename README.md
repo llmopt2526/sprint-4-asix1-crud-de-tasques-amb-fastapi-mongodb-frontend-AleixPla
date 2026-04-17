@@ -25,7 +25,7 @@ No fet:
 - Fer tests amb Postman
 
 
-CLASSE 16-17/04
+CLASSE 16/04
 
 Fet:
 - Crear i configurar el model de dades de MongoDB Atlas, i connecta-la al backend
@@ -39,5 +39,20 @@ Fet:
   
 
 No fet: 
+- Fer tests amb Postman
+- Comentar el codi (explicar-lo)
+
+
+CLASSE 17/04
+
+Fet:
+- Crear i configurar el model de dades de MongoDB Atlas, i connecta-la al backend
+- Fer el requirements.txt
+- Fer el HTML, CSS i Javascript
+- Acabar de fer el app.py
+- Comprovar les comprovacions de connexió (BD+Fontend+Backend) connectats
+- Fer les operacions CRUD
+- Implementar skeleton al CSS
+- Fer el .evn + gitignore
 - Fer tests amb Postman
 - Comentar el codi (explicar-lo)
