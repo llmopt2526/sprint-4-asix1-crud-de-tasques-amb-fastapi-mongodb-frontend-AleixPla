@@ -55,4 +55,7 @@ Fet:
 - Implementar skeleton al CSS
 - Fer el .evn + gitignore
 - Fer tests amb Postman
+
+No fet:
 - Comentar el codi (explicar-lo)
+- Fer un video fent proves al frontend
