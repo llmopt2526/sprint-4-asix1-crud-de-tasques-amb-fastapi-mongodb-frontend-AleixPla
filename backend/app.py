@@ -38,7 +38,6 @@ app.add_middleware(
 # ------------------------------------------------------------------------ #
 #                   Configuració de la connexió amb MongoDB                #
 # ------------------------------------------------------------------------ #
-# Corregit per evitar l'error KeyError: MONGODB_URL
 client = AsyncMongoClient(os.environ.get("MONGODB_URL", "mongodb://localhost:27017"))
 
 db = client.gestor_pelicules
@@ -64,7 +63,7 @@ class PeliculaModel(BaseModel):
         json_schema_extra={
             "example": {
                 "titol": "Creep",
-                "descripcio": "Un càmera accepta una feina per filmar la vida quotidiana d'un home amb càncer terminal en una cabana remota, però aviat descobreix que el seu client és un psicòpata amb intencions malicioses",
+                "descripcio": "Un càmera accepta una feina per filmar la vida quotidiana...",
                 "estat": "vista",
                 "puntuacio": 4,
                 "genere": "Terror",
@@ -72,6 +71,9 @@ class PeliculaModel(BaseModel):
             }
         },
     )
+
+class EstatUpdateModel(BaseModel):
+    estat: Literal["pendent de veure", "vista"] = Field(...)
 
 # ------------------------------------------------------------------------ #
 #                               Endpoints API                              #
@@ -101,6 +103,22 @@ async def create_pelicula(pelicula: PeliculaModel = Body(...)):
 async def list_pelicules():
     return await pelicules_collection.find().to_list(1000)
 
+# --- NOU: ENDPOINT PER OBTENIR UNA PEL·LÍCULA PER ID ---
+@app.get(
+    "/pelicules/{id}",
+    response_description="Obté una única pel·lícula per ID",
+    response_model=PeliculaModel,
+    response_model_by_alias=False,
+)
+async def show_pelicula(id: str):
+    """
+    Busca una pel·lícula específica a la base de dades utilitzant el seu ID.
+    """
+    if (pelicula := await pelicules_collection.find_one({"_id": ObjectId(id)})) is not None:
+        return pelicula
+
+    raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
+
 @app.delete(
     "/pelicules/{id}", 
     response_description="Esborra una pel·lícula"
@@ -113,19 +131,16 @@ async def delete_pelicula(id: str):
 
     raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
 
-# --- NOU: ENDPOINT PER ACTUALITZAR ---
 @app.put(
     "/pelicules/{id}",
-    response_description="Actualitza una pel·lícula existent",
+    response_description="Actualitza només l'estat d'una pel·lícula existent",
     response_model=PeliculaModel,
     response_model_by_alias=False,
 )
-async def update_pelicula(id: str, pelicula: PeliculaModel = Body(...)):
-    actualitzacio = pelicula.model_dump(by_alias=True, exclude=["id"])
-    
+async def update_pelicula(id: str, dades_actualitzacio: EstatUpdateModel = Body(...)):
     peli_actualitzada = await pelicules_collection.find_one_and_update(
         {"_id": ObjectId(id)},
-        {"$set": actualitzacio},
+        {"$set": {"estat": dades_actualitzacio.estat}},
         return_document=ReturnDocument.AFTER
     )
     
