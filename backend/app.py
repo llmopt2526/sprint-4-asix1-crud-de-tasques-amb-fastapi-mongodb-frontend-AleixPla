@@ -21,7 +21,6 @@ from pymongo import ReturnDocument
 # ------------------------------------------------------------------------ #
 #                         Inicialització de l'aplicació                    #
 # ------------------------------------------------------------------------ #
-# Creació de la instància FastAPI amb infomració bàsica de l'API
 app = FastAPI(
     title="Gestor de Pel·lícules API",
     summary="API REST amb FastAPI i MongoDB per gestionar informació de pel·lícules",
@@ -30,41 +29,28 @@ app = FastAPI(
 # --- CONFIGURACIÓ CORS AFEGIDA AQUÍ ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permet que qualsevol web es connecti (ideal per desenvolupament)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Permet tots els mètodes com POST, GET, PUT, DELETE
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # ------------------------------------------------------------------------ #
 #                   Configuració de la connexió amb MongoDB                #
 # ------------------------------------------------------------------------ #
-# Obtenim la URL de la variable d'entorn per seguretat.
-# Si no troba la variable, farà servir localhost per defecte.
+# Corregit per evitar l'error KeyError: MONGODB_URL
+client = AsyncMongoClient(os.environ.get("MONGODB_URL", "mongodb://localhost:27017"))
 
-# mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
-# client = AsyncMongoClient(mongodb_url)
-
-client = AsyncMongoClient(os.environ["MONGODB_URL"])
-
-# Selecció de la base de dades i de la col·lecció adaptada al teu domini
 db = client.gestor_pelicules
 pelicules_collection = db.get_collection("pelicules")
 
-# PyObjectId per a la compatibilitat entre MongoDB i JSON/Pydantic
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
 # ------------------------------------------------------------------------ #
 #                            Definició dels models                         #
 # ------------------------------------------------------------------------ #
 class PeliculaModel(BaseModel):
-    """
-    Model que representa una pel·lícula.
-    Conté tots els camps requerits a l'enunciat de l'Sprint 4.
-    """
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
-    
-    # Camps obligatoris del gestor de pel·lícules
     titol: str = Field(...)
     descripcio: str = Field(...)
     estat: Literal["pendent de veure", "vista"] = Field(...)
@@ -72,7 +58,6 @@ class PeliculaModel(BaseModel):
     genere: str = Field(...)
     usuari: str = Field(...)
 
-    # Configuració addicional del model Pydantic per a Swagger UI
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
@@ -100,20 +85,11 @@ class PeliculaModel(BaseModel):
     response_model_by_alias=False,
 )
 async def create_pelicula(pelicula: PeliculaModel = Body(...)):
-    """
-    Insereix una nova pel·lícula a la base de dades.
-    """
-    # Convertim el model a diccionari i excloem l'ID perquè el generi MongoDB
     pelicula_dict = pelicula.model_dump(by_alias=True, exclude=["id"])
-
-    # Inserim a la col·lecció
     nova_pelicula = await pelicules_collection.insert_one(pelicula_dict)
-
-    # Recuperem el document inserit per retornar-lo
     pelicula_creada = await pelicules_collection.find_one(
         {"_id": nova_pelicula.inserted_id}
     )
-
     return pelicula_creada
 
 @app.get(
@@ -123,10 +99,6 @@ async def create_pelicula(pelicula: PeliculaModel = Body(...)):
     response_model_by_alias=False,
 )
 async def list_pelicules():
-    """
-    Llista totes les dades de pel·lícules a la base de dades.
-    La resposta no està paginada i es limita a 1000 resultats.
-    """
     return await pelicules_collection.find().to_list(1000)
 
 @app.delete(
@@ -134,13 +106,30 @@ async def list_pelicules():
     response_description="Esborra una pel·lícula"
 )
 async def delete_pelicula(id: str):
-    """
-    Elimina una pel·lícula de la base de dades utilitzant el seu ID.
-    Si l'operació té èxit, retorna un codi 204 (No Content).
-    """
     delete_result = await pelicules_collection.delete_one({"_id": ObjectId(id)})
 
     if delete_result.deleted_count == 1:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+    raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
+
+# --- NOU: ENDPOINT PER ACTUALITZAR ---
+@app.put(
+    "/pelicules/{id}",
+    response_description="Actualitza una pel·lícula existent",
+    response_model=PeliculaModel,
+    response_model_by_alias=False,
+)
+async def update_pelicula(id: str, pelicula: PeliculaModel = Body(...)):
+    actualitzacio = pelicula.model_dump(by_alias=True, exclude=["id"])
+    
+    peli_actualitzada = await pelicules_collection.find_one_and_update(
+        {"_id": ObjectId(id)},
+        {"$set": actualitzacio},
+        return_document=ReturnDocument.AFTER
+    )
+    
+    if peli_actualitzada is not None:
+        return peli_actualitzada
 
     raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
