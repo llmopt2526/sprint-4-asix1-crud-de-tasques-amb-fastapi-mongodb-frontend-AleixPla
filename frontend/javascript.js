@@ -1,80 +1,79 @@
-//===Any global variables whose scope will need to be across the entire file...
-var currentId;
+const formulari = document.getElementById('formulari-pelicules');
+const llistaPelicules = document.getElementById('llista-pelicules');
+const API_URL = 'http://127.0.0.1:8000/pelicules/'; // La URL del teu backend
 
-//===Actually, I am kind of a big fan of defining a Global object, or something
-//	 similar to store all of my page-level variables to. Something like:
-var Global = {
-	currentId: undefined,
-	action: 'create',
-	user: {
-		userName: 'Bob',
-		email: 'bgibilaro@valexander.com',
-		extension: '2470'
-	}
-};
+// 1. Funció per carregar les pel·lícules de MongoDB quan obrim la pàgina
+async function carregarPelicules() {
+    try {
+        const resposta = await fetch(API_URL);
+        if (resposta.ok) {
+            const pelicules = await resposta.json();
+            llistaPelicules.innerHTML = ''; // Buidem la llista abans d'omplir-la
 
-// this allows me to get those values anywhere in the page with
-// something like Global.currentId or Global.user.userName. I can also set it by saying
-// Global.currentId = 2. I can even add to it on-the-fly by saying
-// Global.newVariable = 'something' which is now available over the
-// entirety of that page....
-
-//===My document.ready() handler...
-$(document).ready(function(){
-
-	//=== do some code stuff...
-
-	//===finally, bind my events...
-	bindEvents();
-});
-
-//===This function handles event binding for anything on the page....
-function bindEvents(){
-	// So, something simply like binding to a static anchor tag...
-	$('#aSomeLink').on('click', function(event){
-
-		// do some cool code stuff...
-		// Mr. Wizard Time: try putting a break point someplace in here and
-		//	then investigate the event argument. All sorts of cool stuff can
-		//	come from there. In fact, what if I wanted to assign the link that
-		//	was clicked to a local variable?
-
-		// I could do this...
-		$a = $(this);	// note, prefixing the variable with bling ($) is just a 
-						// nice way for us to know that it is a jQuery object...
-
-		// Or, I could do this...
-		$a = $(event.target);
-
-		// I could also get the id of the link like so:
-		var id = event.target.id;
-
-		// not a big difference, but it is nice to use native JavaScript when you can. 
-	});
-
-	// Hey, but I can also do something cooler with the on method. What if I have a table
-	//	full of documents on the page with the option to edit, delete, etc. each of the table
-	//	rows. I can handle this in one nice bind using on. for the sake of this example, let's
-	//	assume I gave the "delete" link an attribute of rel="delete" and the "edit" link an 
-	//	attribute of rel="edit", I could do the following:
-	$('#myTable').on('click', 'a[rel=delete],a[rel=edit]', function(event){
-		$a = $(event.target);
-
-		switch($a.attr('rel')){
-			case 'edit':
-
-				// do some stuff or call a function...
-				
-				break;
-			case 'delete':
-				// do some stuff or call a function...
-
-				break;
-		}
-	});
-
-	// the above allows you to setup your bindings one time, when the page loads and then forget about
-	//	it. It will apply those bindings any time a new row is added to #myTable, automagically...
+            // Per cada pel·lícula que ve de MongoDB, la pintem a la web
+            pelicules.forEach(pelicula => {
+                afegirPeliculaAlDOM(pelicula);
+            });
+        }
+    } catch (error) {
+        console.error("No s'ha pogut connectar amb el backend per carregar dades:", error);
+    }
 }
 
-//===Then everything below this is all of the other declared functions for my page...
+// 2. Funció auxiliar que reutilitza el teu codi per crear les targetes HTML
+function afegirPeliculaAlDOM(pelicula) {
+    const novaPelicula = document.createElement('div');
+    novaPelicula.classList.add('pelicula-card');
+    novaPelicula.innerHTML = `
+        <h3>${pelicula.titol}</h3>
+        <p><strong>Descripció:</strong> ${pelicula.descripcio}</p>
+        <p><strong>Estat:</strong> ${pelicula.estat}</p>
+        <p><strong>Puntuació:</strong> ${pelicula.puntuacio} / 5</p>
+        <p><strong>Gènere:</strong> ${pelicula.genere}</p>
+        <p><strong>Usuari:</strong> ${pelicula.usuari}</p>
+    `;
+    llistaPelicules.appendChild(novaPelicula);
+}
+
+// 3. Quan l'usuari clica "Guardar"
+formulari.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    // Recollim les dades dels inputs
+    const novaPelicula = {
+        titol: document.getElementById('titol').value,
+        descripcio: document.getElementById('descripcio').value,
+        estat: document.getElementById('estat').value,
+        puntuacio: parseInt(document.getElementById('puntuacio').value), // Important: convertir a número
+        genere: document.getElementById('genere').value,
+        usuari: document.getElementById('usuari').value
+    };
+
+    try {
+        // Enviem les dades al backend amb un POST
+        const resposta = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(novaPelicula)
+        });
+
+        if (resposta.ok) {
+            // Si el backend ens diu que tot bé (Codi 201), agafem la peli creada...
+            const peliculaGuardada = await resposta.json();
+            // ...la pintem a la llista...
+            afegirPeliculaAlDOM(peliculaGuardada);
+            // ...i buidem el formulari
+            formulari.reset();
+        } else {
+            alert("Hi ha hagut un error guardant la pel·lícula. Revisa que les dades siguin correctes.");
+        }
+    } catch (error) {
+        console.error("Error enviant les dades:", error);
+        alert("Error de connexió. Recorda connectar el BACKEND");
+    }
+});
+
+// 4. Executem la funció de càrrega només obrir la pàgina
+carregarPelicules();
