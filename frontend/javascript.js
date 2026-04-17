@@ -86,7 +86,7 @@ function prepararEdicio(id) {
     document.getElementById("usuari").value = p.usuari;
 
     document.getElementById("titol-formulari").innerText = "Editar pel·lícula";
-    document.getElementById("btn-guardar").innerText = "Actualitzar Pel·lícula";
+    document.getElementById("btn-guardar").innerText = "Actualitzar pel·lícula";
     document.getElementById("btn-guardar").style.backgroundColor = "#ffc107";
     document.getElementById("btn-guardar").style.color = "black";
     document.getElementById("btn-cancelar").style.display = "block";
