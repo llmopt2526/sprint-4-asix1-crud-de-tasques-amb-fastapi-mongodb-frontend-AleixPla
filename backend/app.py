@@ -63,12 +63,12 @@ class PeliculaModel(BaseModel):
         arbitrary_types_allowed=True,
         json_schema_extra={
             "example": {
-                "titol": "Dune: Part Dos",
-                "descripcio": "En Paul Atreides s'uneix als Fremen.",
+                "titol": "Creep",
+                "descripcio": "Un càmera accepta una feina per filmar la vida quotidiana d'un home amb càncer terminal en una cabana remota, però aviat descobreix que el seu client és un psicòpata amb intencions malicioses",
                 "estat": "vista",
-                "puntuacio": 5,
-                "genere": "Ciència Ficció",
-                "usuari": "Maria"
+                "puntuacio": 4,
+                "genere": "Terror",
+                "usuari": "Aleix"
             }
         },
     )
