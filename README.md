@@ -23,4 +23,5 @@ ERRORS QUE HE TINGUT:
 
 He tingut algunes petites inconveniències, pero les he pogut solucionar.
 La primera, va ser que intentava fer proves al frontend i no hem funcionava, ja que no tenia l'etorn virtual en funcioanment.
-L'altra, que tenía un error de sintaxi al fitxer app.py, en concret, 
+L'altra, que tenía un error de sintaxi al fitxer app.py, en concret, a la línea 5, que tenia que afegir ().
+I l'últim "error" (despiste) que he tingut és que cada cop que encens la màquina tens que posar el "MONGO_URL=..." i clar no el vaig posar i no hem funcionava de cap forma, el que vaig implementar per solucionar-ho va ser a partir del fitxer .env (explicat a la documentació de dalt), de forma que ja no s'ha de posar cada cop que encens la màquina aquesta comanda.
