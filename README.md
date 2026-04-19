@@ -1,103 +1,27 @@
-### Estructura del projecte
+README Aleix Pla
 
-A diferència d’altres projectes més complexos, en aquest cas **treballareu amb una estructura simple**, igual que a l’exemple oficial. Tot el backend s’ubica en un únic fitxer (`app.py`), amb l’objectiu de centrar-se en **aprendre CRUD amb FastAPI i MongoDB** abans de **modularitzar el codi**.
 
-El projecte ha de mantenir una **estructura com aquesta**:
+Aquest srpint l'he fet en una màquina virtual Ubuntu 24.04
 
-```
-project/
-├── README.md
-├── backend/                # FastAPI + MongoDB
-│   ├── app.py              # Fitxer principal (tota la lògica)
-│   └── requirements.txt    # Dependències
-│
-├── frontend/           # Interfície web
-│   ├── index.html
-│   ├── style.css
-│   └── app.js
-│
-└── tests/              # Tests amb Postman
-    └── Postman_API_tests.json
-```
-#### Fitxer `app.py`
+El primer que vaig fer, va ser si ja tenia instal·lat de fàbric el python, i com que ja el tenia, vaig passar a crear i activar un nou entorn virtual.
 
-En projectes més complexos, es separaria, per exemple, la connexió a MongoDB en un fitxer a banda, anomenat `database.py`; i, els models, en `models.py`.
-En el nostre cas, tot el backend l'implementarem dins del fitxer `app.py` per simplificar.
+Seguidament, vaig agafar tot el repositori del GitHub, i me'l vaig clonar i seguidament passar-lo al Visual Studio per a treballar de forma més còmoda.
 
-Tot i això, és **molt recomanable**:
-- Afegir **grans comentaris per separar lògica** de connexió, models i endpoints.
-- **Documentar clarament cada secció** per facilitar la lectura i localització d’errors.
+Vaig començar per el backend, instal·lant els requirements.txt, que el vaig agafar del repositori oficial de GitHub de FastAPI, cosa, que només vaig modificar l'última línea.
+Després amb el app.py, per a tindre'l de tal forma de que tingui connectada la base de dades (MongoDB Altas).
+També he fet una modificació al backend, que és el fitxer .env, el qual fa que no tinguis que posar manualment cada cop que arrnaques la màquina per connectar el backend al frontend, cosa que t'ho automaititza, i et lleva mals de cap.
+Un cop creat tot el backend, fent testos de que funciona tot, passariem a fer el fontend.
 
-Un bon exemple seria aquest:
-```python
-import os
-from typing import Optional, List
+Al frontend, creenm un html i css (sketleton) simples, i també un javascript, el més important és el javascript, ja que és el que connectem el backend amb el propi frontend, per a que pugui funcionar correctament amb les 4 funcionalitats CRUD, que en el meu cas sería crear, llegir, editar i esborrar les pel·lícules.
 
-from fastapi import FastAPI, Body, HTTPException, status
-from fastapi.responses import Response
-from pydantic import ConfigDict, BaseModel, Field, EmailStr
-from pydantic.functional_validators import BeforeValidator
-from typing_extensions import Annotated
+Finalment, anem al Postman, i allí farem 5 operacions, la primera es fer 2 tipus de GET, un de normal i l'altre filtrant el id de la pel·lícula en el meu cas, seguidament, fem un post per a llegir-ho, fem un PUT per a actulilitzar-ho, que com ho tinc al fitxer app.py, només es pot modificar l'estat de la pel·lícula, és a dir, que si està pendent de veure o si ja està vista, i finalment per a esborrar les pel·lícules.
 
-from bson import ObjectId
-import asyncio
-from pymongo import AsyncMongoClient
-from pymongo import ReturnDocument
+També he grabat un petit vídeo, fent proves al frontend, el que he fet ha segut crear una pel·lícula, amb la seva respectiva informació als diferents camps, i un cop creada, editar-la i quan ja estava editada, esborrant-la.
 
-# ------------------------------------------------------------------------ #
-#                         Inicialització de l'aplicació                    #
-# ------------------------------------------------------------------------ #
-# Creació de la instància FastAPI amb informació bàsica de l'API
-app = FastAPI(
-    title="Student Course API",
-    summary="Exemple d'API REST amb FastAPI i MongoDB per gestionar informació d'estudiants",
-)
 
-# ------------------------------------------------------------------------ #
-#                   Configuració de la connexió amb MongoDB               #
-# ------------------------------------------------------------------------ #
-# Creem el client de MongoDB utilitzant la URL de connexió emmagatzemada
-# a les variables d'entorn. Això evita incloure credencials dins del codi.
-client = AsyncMongoClient(os.environ["MONGODB_URL"])
+ERRORS QUE HE TINGUT: 
 
-# Selecció de la base de dades i de la col·lecció
-db = client.college
-student_collection = db.get_collection("students")
-
-# Els documents de MongoDB tenen `_id` de tipus ObjectId.
-# Aquí definim PyObjectId com un string serialitzable per JSON,
-# que serà utilitzat als models Pydantic.
-PyObjectId = Annotated[str, BeforeValidator(str)]
-
-# ------------------------------------------------------------------------ #
-#                            Definició dels models                        #
-# ------------------------------------------------------------------------ #
-class StudentModel(BaseModel):
-    """
-    Model que representa un estudiant.
-    Conté tots els camps obligatoris i opcional `_id`.
-    """
-    # Clau primària de l'estudiant. 
-    # MongoDB utilitza `_id`, però l'API exposa aquest camp com `id`.
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
-    
-    # Camps obligatoris de l'estudiant
-    name: str = Field(...)
-    email: EmailStr = Field(...)
-    course: str = Field(...)
-    gpa: float = Field(..., le=4.0)
-
-    # Configuració addicional del model Pydantic
-    model_config = ConfigDict(
-        populate_by_name=True,  # Permet utilitzar alias al serialitzar/deserialitzar
-        arbitrary_types_allowed=True,  # Permet tipus personalitzats com ObjectId
-        json_schema_extra={
-            "example": {
-                "name": "Jane Doe",
-                "email": "jdoe@example.com",
-                "course": "Experiments, Science, and Fashion in Nanophotonics",
-                "gpa": 3.0,
-            }
-        },
-    )
-```
+He tingut algunes petites inconveniències, pero les he pogut solucionar.
+La primera, va ser que intentava fer proves al frontend i no hem funcionava, ja que no tenia l'etorn virtual en funcioanment.
+L'altra, que tenía un error de sintaxi al fitxer app.py, en concret, a la línea 5, que tenia que afegir ().
+I l'últim "error" (despiste) que he tingut és que cada cop que encens la màquina tens que posar el "MONGO_URL=..." i clar no el vaig posar i no hem funcionava de cap forma, el que vaig implementar per solucionar-ho va ser a partir del fitxer .env (explicat a la documentació de dalt), de forma que ja no s'ha de posar cada cop que encens la màquina aquesta comanda.

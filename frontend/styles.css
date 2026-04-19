@@ -1,21 +1,164 @@
-/* Applies to the entire body of the HTML document (except where overridden by more specific
-selectors). */
+/* Importo la plantilla de Skeleton */
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,300,600');
+
 body {
-  margin: 25px;
-  background-color: rgb(240,240,240);
-  font-family: arial, sans-serif;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  line-height: 1.6;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 2.4rem;
+  font-weight: 300;
+  letter-spacing: -.1rem;
+  margin-bottom: 2rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 350px;
+  height: fit-content;
+  position: sticky;
+  top: 40px;
+}
+
+.llista-container {
+  flex: 1;
+  max-width: 600px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px;
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: inherit;
   font-size: 14px;
 }
 
-/* Applies to all <h1>...</h1> elements. */
-h1 {
-  font-size: 35px;
-  font-weight: normal;
-  margin-top: 5px;
+textarea {
+  min-height: 80px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  resize: none;
 }
 
-/* Applies to all elements with <... class="someclass"> specified. */
-.someclass { color: red; }
+input:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0;
+}
 
-/* Applies to the element with <... id="someid"> specified. */
-#someid { color: green; }
+button {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+button:hover {
+  color: #333;
+  border-color: #888;
+  outline: 0;
+}
+
+#btn-guardar {
+  width: 100%;
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0;
+  margin-top: 1rem;
+}
+
+#btn-guardar:hover {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB;
+}
+
+.pelicula-card {
+  background: #fff;
+  border: 1px solid #E1E1E1;
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.pelicula-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #33C3F0;
+}
+
+.pelicula-card p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.pelicula-card strong {
+  font-weight: 600;
+}
+
+.accions-targeta {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #E1E1E1;
+}
+
+.btn-editar {
+}
+
+.btn-esborrar {
+  color: #E74C3C;
+  border-color: #E74C3C;
+}
+
+.btn-esborrar:hover {
+  color: #FFF;
+  background-color: #E74C3C;
+  border-color: #E74C3C;
+}

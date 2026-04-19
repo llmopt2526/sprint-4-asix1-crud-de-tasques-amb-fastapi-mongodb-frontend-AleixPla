@@ -1,80 +1,113 @@
-//===Any global variables whose scope will need to be across the entire file...
-var currentId;
+const formulari = document.getElementById('formulari-pelicules');
+const llistaPelicules = document.getElementById('llista-pelicules');
+const API_URL = 'http://127.0.0.1:8000/pelicules/';
 
-//===Actually, I am kind of a big fan of defining a Global object, or something
-//	 similar to store all of my page-level variables to. Something like:
-var Global = {
-	currentId: undefined,
-	action: 'create',
-	user: {
-		userName: 'Bob',
-		email: 'bgibilaro@valexander.com',
-		extension: '2470'
-	}
-};
+let peliculesActuals = [];
 
-// this allows me to get those values anywhere in the page with
-// something like Global.currentId or Global.user.userName. I can also set it by saying
-// Global.currentId = 2. I can even add to it on-the-fly by saying
-// Global.newVariable = 'something' which is now available over the
-// entirety of that page....
-
-//===My document.ready() handler...
-$(document).ready(function(){
-
-	//=== do some code stuff...
-
-	//===finally, bind my events...
-	bindEvents();
-});
-
-//===This function handles event binding for anything on the page....
-function bindEvents(){
-	// So, something simply like binding to a static anchor tag...
-	$('#aSomeLink').on('click', function(event){
-
-		// do some cool code stuff...
-		// Mr. Wizard Time: try putting a break point someplace in here and
-		//	then investigate the event argument. All sorts of cool stuff can
-		//	come from there. In fact, what if I wanted to assign the link that
-		//	was clicked to a local variable?
-
-		// I could do this...
-		$a = $(this);	// note, prefixing the variable with bling ($) is just a 
-						// nice way for us to know that it is a jQuery object...
-
-		// Or, I could do this...
-		$a = $(event.target);
-
-		// I could also get the id of the link like so:
-		var id = event.target.id;
-
-		// not a big difference, but it is nice to use native JavaScript when you can. 
-	});
-
-	// Hey, but I can also do something cooler with the on method. What if I have a table
-	//	full of documents on the page with the option to edit, delete, etc. each of the table
-	//	rows. I can handle this in one nice bind using on. for the sake of this example, let's
-	//	assume I gave the "delete" link an attribute of rel="delete" and the "edit" link an 
-	//	attribute of rel="edit", I could do the following:
-	$('#myTable').on('click', 'a[rel=delete],a[rel=edit]', function(event){
-		$a = $(event.target);
-
-		switch($a.attr('rel')){
-			case 'edit':
-
-				// do some stuff or call a function...
-				
-				break;
-			case 'delete':
-				// do some stuff or call a function...
-
-				break;
-		}
-	});
-
-	// the above allows you to setup your bindings one time, when the page loads and then forget about
-	//	it. It will apply those bindings any time a new row is added to #myTable, automagically...
+// Comprovem si tenim connexió amb el servidor
+async function carregarPelicules() {
+    try {
+        const resposta = await fetch(API_URL);
+        if (resposta.ok) {
+            peliculesActuals = await resposta.json();
+            llistaPelicules.innerHTML = '';
+            peliculesActuals.forEach(pelicula => afegirPeliculaAlDOM(pelicula));
+        }
+    } catch (error) {
+        console.error("Error carregar dades:", error);
+    }
 }
 
-//===Then everything below this is all of the other declared functions for my page...
+// Comprovem les id que tenen les pel·lícules
+function afegirPeliculaAlDOM(pelicula) {
+    const peliId = pelicula.id || pelicula._id;
+    const novaPelicula = document.createElement('div');
+    novaPelicula.classList.add('pelicula-card');
+
+// Funció per a crear una nova pel·lícula amb la seva respectiva infomració del seu respectiu camp + boton d'editar i esborrar
+    novaPelicula.innerHTML = `
+        <h3>${pelicula.titol}</h3>
+        <p><strong> Descripció:</strong> ${pelicula.descripcio}</p>
+        <p><strong> Estat:</strong> ${pelicula.estat}</p>
+        <p><strong> Puntuació:</strong> ${pelicula.puntuacio} / 5</p>
+        <p><strong> Gènere:</strong> ${pelicula.genere}</p>
+        <p><strong> Usuari:</strong> ${pelicula.usuari}</p>
+
+        <div class="accions-targeta">
+            <button class="btn-editar" onclick="prepararEdicio('${peliId}')"> Editar</button>
+            <button class="btn-esborrar" onclick="esborrarPelicula('${peliId}')"> Esborrar</button>
+        </div>
+    `;
+    llistaPelicules.appendChild(novaPelicula);
+}
+
+// Funció per guardar o editar
+formulari.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const idActiu = document.getElementById('pelicula-id').value;
+    const dades = {
+        titol: document.getElementById('titol').value,
+        descripcio: document.getElementById('descripcio').value,
+        estat: document.getElementById('estat').value,
+        puntuacio: parseInt(document.getElementById('puntuacio').value),
+        genere: document.getElementById('genere').value,
+        usuari: document.getElementById('usuari').value
+    };
+
+    try {
+        const method = idActiu ? 'PUT' : 'POST';
+        const url = idActiu ? API_URL + idActiu : API_URL;
+
+        const res = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dades)
+        });
+
+        if (res.ok) {
+            cancelarEdicio();
+            carregarPelicules();
+        }
+    } catch (e) { console.error(e); }
+});
+
+// Fem que esborri la pel·lícula, i que mostri un "alert" de que si estas segur d'esborrar-la
+async function esborrarPelicula(id) {
+    if (confirm("Estas segur?")) {
+        await fetch(API_URL + id, { method: "DELETE" });
+        carregarPelicules();
+    }
+}
+
+// Omplim totes les caselles del formulari 
+function prepararEdicio(id) {
+    const p = peliculesActuals.find(p => (p.id === id || p._id === id));
+    document.getElementById("pelicula-id").value = id;
+    document.getElementById("titol").value = p.titol;
+    document.getElementById("descripcio").value = p.descripcio;
+    document.getElementById("estat").value = p.estat;
+    document.getElementById("puntuacio").value = p.puntuacio;
+    document.getElementById("genere").value = p.genere;
+    document.getElementById("usuari").value = p.usuari;
+
+// Cambiem l'aspecte del formulari per a que sigui més clar
+    document.getElementById("titol-formulari").innerText = "Editar pel·lícula";
+    document.getElementById("btn-guardar").innerText = "Actualitzar pel·lícula";
+    document.getElementById("btn-guardar").style.backgroundColor = "#ffc107";
+    document.getElementById("btn-guardar").style.color = "black";
+    document.getElementById("btn-cancelar").style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// A l'hora d'editar una pel·lícula, fem que cancel·li l'edició
+function cancelarEdicio() {
+    formulari.reset();
+    document.getElementById("pelicula-id").value = "";
+    document.getElementById("titol-formulari").innerText = "Afegir pel·lícula";
+    document.getElementById("btn-guardar").innerText = "Guardar la pel·lícula";
+    document.getElementById("btn-guardar").style.backgroundColor = "#28a745";
+    document.getElementById("btn-guardar").style.color = "white";
+    document.getElementById("btn-cancelar").style.display = "none";
+}
+
+carregarPelicules();
