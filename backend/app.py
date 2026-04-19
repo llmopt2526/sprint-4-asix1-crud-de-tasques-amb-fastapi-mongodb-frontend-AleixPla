@@ -1,5 +1,6 @@
 import os
 
+#Carreguem la url del MongoDB Atlas des del fitxer .env
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -7,7 +8,6 @@ from typing import Optional, List, Literal
 
 from fastapi import FastAPI, Body, HTTPException, status
 from fastapi.responses import Response
-# --- NOVA IMPORTACIÓ PER AL CORS ---
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ConfigDict, BaseModel, Field
 from pydantic.functional_validators import BeforeValidator
@@ -103,7 +103,7 @@ async def create_pelicula(pelicula: PeliculaModel = Body(...)):
 async def list_pelicules():
     return await pelicules_collection.find().to_list(1000)
 
-# --- NOU: ENDPOINT PER OBTENIR UNA PEL·LÍCULA PER ID ---
+# Nou endpoint per a obtindre una pel·lícula per la seva id
 @app.get(
     "/pelicules/{id}",
     response_description="Obté una única pel·lícula per ID",
@@ -119,6 +119,7 @@ async def show_pelicula(id: str):
 
     raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
 
+# Per a esborrar pel·lícules
 @app.delete(
     "/pelicules/{id}", 
     response_description="Esborra una pel·lícula"
@@ -131,6 +132,7 @@ async def delete_pelicula(id: str):
 
     raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
 
+# Per a actualitzar NOMÉS l'estat de la pel·lícula desde POSTMAN
 @app.put(
     "/pelicules/{id}",
     response_description="Actualitza només l'estat d'una pel·lícula existent",
@@ -143,8 +145,10 @@ async def update_pelicula(id: str, dades_actualitzacio: EstatUpdateModel = Body(
         {"$set": {"estat": dades_actualitzacio.estat}},
         return_document=ReturnDocument.AFTER
     )
-    
+
+# Si troba la película i l'actualitza, la mostra al frontend
     if peli_actualitzada is not None:
         return peli_actualitzada
 
+# Si no la troba, mostra un error
     raise HTTPException(status_code=404, detail=f"Pel·lícula amb id {id} no trobada")
