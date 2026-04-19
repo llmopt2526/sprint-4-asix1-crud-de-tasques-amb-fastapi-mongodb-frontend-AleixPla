@@ -21,7 +21,6 @@ h2 {
   margin-bottom: 2rem;
 }
 
-/* Contenidors de l'estructura general */
 .container {
   width: 100%;
   max-width: 350px;
@@ -35,7 +34,6 @@ h2 {
   max-width: 600px;
 }
 
-/* Formularis i Inputs - Estil Skeleton */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -67,7 +65,6 @@ textarea {
   padding-top: 6px;
   padding-bottom: 6px;
   resize: none;
-  /* Manté la casella fixa com vas demanar */
 }
 
 input:focus,
@@ -77,7 +74,6 @@ select:focus {
   outline: 0;
 }
 
-/* Botons Generals - Estil Skeleton (Lletres majúscules i minimalistes) */
 button {
   display: inline-block;
   height: 38px;
@@ -105,7 +101,6 @@ button:hover {
   outline: 0;
 }
 
-/* Botó Principal (Guardar) - Blau Skeleton */
 #btn-guardar {
   width: 100%;
   color: #FFF;
@@ -120,7 +115,6 @@ button:hover {
   border-color: #1EAEDB;
 }
 
-/* Targetes de Pel·lícules (Sense ombres fortes, vores fines) */
 .pelicula-card {
   background: #fff;
   border: 1px solid #E1E1E1;
@@ -146,7 +140,6 @@ button:hover {
   font-weight: 600;
 }
 
-/* Botons de la Targeta */
 .accions-targeta {
   display: flex;
   justify-content: flex-end;
@@ -157,10 +150,8 @@ button:hover {
 }
 
 .btn-editar {
-  /* Agafa l'estil bàsic de botó transparent de Skeleton */
 }
 
-/* Botó Esborrar - Toc de vermell minimalista */
 .btn-esborrar {
   color: #E74C3C;
   border-color: #E74C3C;
