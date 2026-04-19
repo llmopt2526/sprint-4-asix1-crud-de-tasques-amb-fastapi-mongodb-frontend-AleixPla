@@ -4,6 +4,7 @@ const API_URL = 'http://127.0.0.1:8000/pelicules/';
 
 let peliculesActuals = [];
 
+// Comprovem si tenim connexió amb el servidor
 async function carregarPelicules() {
     try {
         const resposta = await fetch(API_URL);
@@ -17,11 +18,13 @@ async function carregarPelicules() {
     }
 }
 
+// Comprovem les id que tenen les pel·lícules
 function afegirPeliculaAlDOM(pelicula) {
     const peliId = pelicula.id || pelicula._id;
     const novaPelicula = document.createElement('div');
     novaPelicula.classList.add('pelicula-card');
 
+// Funció per a crear una nova pel·lícula amb la seva respectiva infomració del seu respectiu camp + boton d'editar i esborrar
     novaPelicula.innerHTML = `
         <h3>${pelicula.titol}</h3>
         <p><strong> Descripció:</strong> ${pelicula.descripcio}</p>
@@ -29,7 +32,7 @@ function afegirPeliculaAlDOM(pelicula) {
         <p><strong> Puntuació:</strong> ${pelicula.puntuacio} / 5</p>
         <p><strong> Gènere:</strong> ${pelicula.genere}</p>
         <p><strong> Usuari:</strong> ${pelicula.usuari}</p>
-        
+
         <div class="accions-targeta">
             <button class="btn-editar" onclick="prepararEdicio('${peliId}')"> Editar</button>
             <button class="btn-esborrar" onclick="esborrarPelicula('${peliId}')"> Esborrar</button>
@@ -68,6 +71,7 @@ formulari.addEventListener('submit', async function (e) {
     } catch (e) { console.error(e); }
 });
 
+// Fem que esborri la pel·lícula, i que mostri un "alert" de que si estas segur d'esborrar-la
 async function esborrarPelicula(id) {
     if (confirm("Estas segur?")) {
         await fetch(API_URL + id, { method: "DELETE" });
@@ -75,6 +79,7 @@ async function esborrarPelicula(id) {
     }
 }
 
+// Omplim totes les caselles del formulari 
 function prepararEdicio(id) {
     const p = peliculesActuals.find(p => (p.id === id || p._id === id));
     document.getElementById("pelicula-id").value = id;
@@ -85,6 +90,7 @@ function prepararEdicio(id) {
     document.getElementById("genere").value = p.genere;
     document.getElementById("usuari").value = p.usuari;
 
+// Cambiem l'aspecte del formulari per a que sigui més clar
     document.getElementById("titol-formulari").innerText = "Editar pel·lícula";
     document.getElementById("btn-guardar").innerText = "Actualitzar pel·lícula";
     document.getElementById("btn-guardar").style.backgroundColor = "#ffc107";
@@ -93,6 +99,7 @@ function prepararEdicio(id) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// A l'hora d'editar una pel·lícula, fem que cancel·li l'edició
 function cancelarEdicio() {
     formulari.reset();
     document.getElementById("pelicula-id").value = "";
